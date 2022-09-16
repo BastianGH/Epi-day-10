@@ -1,1 +1,3 @@
-Just not began yet.
+L'api est bien entamé:
+-les routes ont été préfaite et le lancement du serveur localhost:3000 fonctionnent;
+-la connection a la base de données ne fonctionne pas.
