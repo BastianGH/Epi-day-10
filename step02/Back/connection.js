@@ -1,15 +1,12 @@
 import mariadb from 'mariadb';
 import dotenv from "dotenv";
-import bodyparser from 'body-parser';
-import express from 'express';
 
-const app = express();
 dotenv.config();
-app.use(bodyparser.urlencoded({extended:false}));
 
+console.log( process.env.MARIADB_USER );
 const pool = mariadb.createPool({
     host: process.env.HOST,
-    user: process.env.USER,
+    user: process.env.MARIADB_USER,
     password: process.env.PASSWORD,
     database: process.env.DATABASE
 });
