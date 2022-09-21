@@ -33,7 +33,6 @@ router.get('/Advertisements/:id', async function (req,res) {
 /* creating a new row */
 router.post('/Advertisements', async function (req,res) {
     try {
-        console.log(req.body);
         const { Job, ShortDescription, LongDescription, Wages, Place, Workingtime } = req.body;
         const sqlQuery = 'INSERT INTO Advertisements ( Job, ShortDescription, LongDescription, Wages, Place, Workingtime ) VALUES ( ?,?,?,?,?,? )'; 
         const rows = await pool.query(sqlQuery, [Job, ShortDescription, LongDescription, Wages, Place, Workingtime]);
@@ -47,9 +46,9 @@ router.post('/Advertisements', async function (req,res) {
 /* changing a row with the job name */
 router.put('/Advertisements/:id', async function (req,res) {
     try {
-        const {Job, ShortDescription, LongDescription, Wages, Place, Workingtime} = req.body;
-        const sqlQuery = `UPDATE Advertisements set Job=?, set ShortDescription=?, set LongDescription=?, set Wages=?, set Place=?, set Workingtime=? WHERE Job = ?`; 
-        const rows = await pool.query(sqlQuery, [Job, ShortDescription, LongDescription, Wages, Place, Workingtime], req.params.id);
+        let {Job, ShortDescription, LongDescription, Wages, Place, Workingtime} = req.body;
+        const sqlQuery = 'UPDATE Advertisements SET Job=?, ShortDescription=?, LongDescription=?, Wages=?, Place=?, Workingtime=? WHERE Job = ?;'; 
+        const rows = await pool.query(sqlQuery, [Job, ShortDescription, LongDescription, Wages, Place, Workingtime, req.params.id] );
         res.status(200).json(rows);
         console.log('You have changed an element in table "Advertisements"');
     } catch (e) {
@@ -60,7 +59,7 @@ router.put('/Advertisements/:id', async function (req,res) {
 /* Deleting a row with the job name */
 router.delete('/Advertisements/:id', async function (req,res) {
     try {
-        const sqlQuery = `DELETE Advertisements WHERE Job = ?`; 
+        const sqlQuery = `DELETE FROM Advertisements WHERE Job = ?`; 
         const rows = await pool.query(sqlQuery, req.params.id);
         res.status(200).json(rows);
         console.log('the element has been deleted from table "Advertisements"');
@@ -85,7 +84,7 @@ router.get('/Companies', async function (req,res) {
     
 });
 /* Getting a row with the job name */
-router.get('Companies/:id', async function (req,res) {
+router.get('/Companies/:id', async function (req,res) {
     try {
         const sqlQuery = `SELECT Name, Ceo, Location, Job FROM Companies WHERE Job=?`;
         const rows = await pool.query(sqlQuery, req.params.id);
@@ -97,10 +96,10 @@ router.get('Companies/:id', async function (req,res) {
     res.status(200)
 });
 /* creating a new row */
-router.post('Companies/', async function (req,res) {
+router.post('/Companies', async function (req,res) {
     try {
         const { Name, Ceo, Location, Job} = req.body;
-        const sqlQuery = `INSERT INTO Companies ( Name, Ceo, Location, Job) VALUES ( ?,?,?,?) `; 
+        const sqlQuery = 'INSERT INTO Companies ( Name, Ceo, Location, Job) VALUES ( ?,?,?,?)'; 
         const rows = await pool.query(sqlQuery, [ Name, Ceo, Location, Job]);
         res.status(200).json(rows);
         console.log('this will create an element in table "Companies"');
@@ -110,11 +109,11 @@ router.post('Companies/', async function (req,res) {
     res.status(200)
 });
 /* changing a row with the job name */
-router.put('Companies/:id', async function (req,res) {
+router.put('/Companies/:id', async function (req,res) {
     try {
         const {Name, Ceo, Location, Job} = req.body;
-        const sqlQuery = `UPDATE Companies set Name=?, set Ceo=?, set Location=?, set Job=? WHERE Job = ?`; 
-        const rows = await pool.query(sqlQuery, [ Name, Ceo, Location, Job], req.params.id);
+        const sqlQuery = `UPDATE Companies SET Name=?, Ceo=?, Location=?, Job=? WHERE Job = ?`; 
+        const rows = await pool.query(sqlQuery, [ Name, Ceo, Location, Job, req.params.id]);
         res.status(200).json(rows);
         console.log('You have changed an element in table "Companies"');
     } catch (e) {
@@ -123,9 +122,9 @@ router.put('Companies/:id', async function (req,res) {
     res.status(200)
 });
 /* Deleting a row with the job name */
-router.post('Companies/:id', async function (req,res) {
+router.delete('/Companies/:id', async function (req,res) {
     try {
-        const sqlQuery = `DELETE Companies WHERE Job = ?`; 
+        const sqlQuery = `DELETE FROM Companies WHERE Job = ?`; 
         const rows = await pool.query(sqlQuery, req.params.id);
         res.status(200).json(rows);
         console.log('the element has been deleted from table "Companies"');
@@ -150,7 +149,7 @@ router.get('/HumanRessources', async function (req,res) {
     
 });
 /* Getting a row with the job name */
-router.get('HumanRessources/:id', async function (req,res) {
+router.get('/HumanRessources/:id', async function (req,res) {
     try {
         const sqlQuery = `SELECT Firstname, Lastname, Status, Job FROM HumanRessources WHERE Job=?`;
         const rows = await pool.query(sqlQuery, req.params.id);
@@ -162,7 +161,7 @@ router.get('HumanRessources/:id', async function (req,res) {
     res.status(200)
 });
 /* creating a new row */
-router.post('/HumanRessources/', async function (req,res) {
+router.post('/HumanRessources', async function (req,res) {
     try {
         const {Firstname, Lastname, Status, Job} = req.body;
         const sqlQuery = `INSERT INTO HumanRessources ( Firstname, Lastname, Status, Job) VALUES (?,?,?,?)`; 
@@ -178,8 +177,8 @@ router.post('/HumanRessources/', async function (req,res) {
 router.put('/HumanRessources/:id', async function (req,res) {
     try {
         const {Firstname, Lastname, Status, Job} = req.body;
-        const sqlQuery = `UPDATE HumanRessources set Firstname=?, set Lastname=?, set Status=?, set Job=? WHERE Job = ?`; 
-        const rows = await pool.query(sqlQuery, [ Firstname, Lastname, Status, Job], req.params.id);
+        const sqlQuery = `UPDATE HumanRessources SET Firstname=?, Lastname=?, Status=?, Job=? WHERE Job = ?`; 
+        const rows = await pool.query(sqlQuery, [ Firstname, Lastname, Status, Job, req.params.id]);
         res.status(200).json(rows);
         console.log('You have changed an element in table "HumanRessources"');
     } catch (e) {
@@ -188,9 +187,9 @@ router.put('/HumanRessources/:id', async function (req,res) {
     res.status(200)
 });
 /* Deleting a row with the job name */
-router.post('HumanRessources/:id', async function (req,res) {
+router.delete('/HumanRessources/:id', async function (req,res) {
     try {
-        const sqlQuery = `DELETE HumanRessources WHERE Job = ?`; 
+        const sqlQuery = `DELETE FROM HumanRessources WHERE Job = ?`; 
         const rows = await pool.query(sqlQuery, req.params.id);
         res.status(200).json(rows);
         console.log('the element has been deleted from table "HumanRessources"');
@@ -215,7 +214,7 @@ router.get('/Informations', async function (req,res) {
     
 });
 /* Getting a row with the job name */
-router.get('Informations/:id', async function (req,res) {
+router.get('/Informations/:id', async function (req,res) {
     try {
         const sqlQuery = `SELECT Mailsent, Firstname, Lastname, Status, Job FROM Informations WHERE Job=?`;
         const rows = await pool.query(sqlQuery, req.params.id);
@@ -227,7 +226,7 @@ router.get('Informations/:id', async function (req,res) {
     res.status(200)
 });
 /* creating a new row */
-router.post('Informations/', async function (req,res) {
+router.post('/Informations', async function (req,res) {
     try {
         const {Mailsent, Firstname, Lastname, Status, Job} = req.body;
         const sqlQuery = `INSERT INTO Informations ( Mailsent, Firstname, Lastname, Status, Job) VALUES (?,?,?,?,?)`; 
@@ -240,11 +239,11 @@ router.post('Informations/', async function (req,res) {
     res.status(200)
 });
 /* changing a row with the job name */
-router.put('Informations/:id', async function (req,res) {
+router.put('/Informations/:id', async function (req,res) {
     try {
         const {Mailsent, Firstname, Lastname, Status, Job} = req.body;
-        const sqlQuery = `UPDATE Informations set Mailsent=?, set Firstname=?, set Lastname=?, set Status=?, set Job=? WHERE Job = ?`; 
-        const rows = await pool.query(sqlQuery, [ Mailsent, Firstname, Lastname, Status, Job], req.params.id);
+        const sqlQuery = `UPDATE Informations SET Mailsent=?, Firstname=?, Lastname=?, Status=?, Job=? WHERE Job = ?`; 
+        const rows = await pool.query(sqlQuery, [ Mailsent, Firstname, Lastname, Status, Job, req.params.id]);
         res.status(200).json(rows);
         console.log('You have changed an element in table "Informations"');
     } catch (e) {
@@ -253,9 +252,9 @@ router.put('Informations/:id', async function (req,res) {
     res.status(200)
 });
 /* Deleting a row with the job name */
-router.post('Informations/:id', async function (req,res) {
+router.delete('/Informations/:id', async function (req,res) {
     try {
-        const sqlQuery = `DELETE Informations WHERE Job = ?`; 
+        const sqlQuery = `DELETE FROM Informations WHERE Job = ?`; 
         const rows = await pool.query(sqlQuery, req.params.id);
         res.status(200).json(rows);
         console.log('the element has been deleted from table "Informations"');
