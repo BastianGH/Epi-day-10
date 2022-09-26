@@ -1,16 +1,12 @@
 <template>
     <main>
         <h2>{{ msg }} : </h2>
-        <div>
-        <Figure_comp/>
-        <Form_comp v-if="form"/>
-    </div>  
+        <Figure_comp />
     </main>    
 </template>
   
 <script>
 import Figure_comp from './Figure.vue';
-import Form_comp from './Form.vue';
 
 export default {
     name: 'Main_comp',
@@ -19,8 +15,7 @@ export default {
     },
     components: {
     Figure_comp,
-    Form_comp
-}
+    }
 }
 </script>
 

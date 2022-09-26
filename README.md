@@ -1,4 +1,4 @@
 Je travaille sur le front : </br>
--J'ai réussi à bien règler les boutons et le fonctionnement des annonces j'ai donc fini l'étape step03;</br>
--Il me faut travailler sur la mise en place d'une connexion au site;</br>
+-J'ai importer vue-router dans mon projet, j'ai essayé d'utiliser mailjs pour le formulaire, j'ai mis en place un front répondant plus aux attentes</br>
+-Je dois travailler sur l'envoi d'un mail via mon formulaire, ensuite je m'occuperai de la connexion</br>
 -Les dernières modifications se trouveront toujours dans le dossier "stepXX" le plus avancé.</br>

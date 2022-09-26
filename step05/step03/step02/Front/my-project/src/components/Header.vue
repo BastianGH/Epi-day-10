@@ -1,17 +1,17 @@
 <template>
     <header>
-        <a href="{{ adress }}">
-            <h1>{{ msg }}</h1>
+        <router-link to="/">
+           <h1>{{ msg }}</h1>
             <div v-if="!connected">
                 <span>Vous n'êtes pas connecté</span>
-                <a href="#">Se connecter</a>
-                <a href="#">S'inscrire</a>
+                <router-link :to="{ name: 'view-connection', params : {name : 'Connection'}}">Se connecter</router-link>
+                <router-link :to="{ name: 'view-registration', params : {name : 'Registration'}}">S'inscrire</router-link>
             </div>
             <div v-else>
                 <span>Bienvenue {{ user[0].name }}</span>
                 <a v-if="user.status=='Admin'" href="#">Modifier votre base de données</a>
             </div>
-        </a>         
+        </router-link>
     </header>    
 </template>
   

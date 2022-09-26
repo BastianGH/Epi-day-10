@@ -10,20 +10,26 @@
         <p>Les horaires de travail sont les suivants : {{ job.Workingtime }}</p>
       </div>
       <button class="first-button" type="button" v-bind:id="job.Job" @click="displaymore(index, job.Job, job.ShortDescription)">Learn more</button>
-      <button class="second-button" type="button" @click="displayform(index)">Apply this job</button>
+      <button class="second-button" type="button" @click="displayform(job.Job)">Apply this job</button>
     </figure>
   </div>
+  <Form_comp v-if="form"/>
 </template>
 
 <script>
 import axios from 'axios';
+import Form_comp from './Form.vue';
 
 export default {
   name: 'Figure_comp',
+  components: {
+    Form_comp,
+  },
   data(){
     return{
       jobs: null,
       form: false,
+      chosenjob: ""
     }
   },  
   mounted(){
@@ -52,11 +58,12 @@ export default {
         }
       }
     },
-    displayform: function(index) {
-      const chosenjob = index;
+    displayform: function( job ) {
+      const chosenjob = job;
       chosenjob;
-      console.log(this.form);
+      console.log("chosenjob :"+chosenjob );
       this.form=true;
+      
     }
   }, 
   

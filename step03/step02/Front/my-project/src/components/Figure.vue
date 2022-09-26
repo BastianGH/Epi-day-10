@@ -1,15 +1,16 @@
 <template>
-  <div class="figure">
+  <div id="figure">
     <figure :key="index" v-for="(job, index) in jobs">
       <h3>{{ job.Job }}</h3>
-      <p v-if="!display">{{ job.ShortDescription }}</p> 
-      <div id='hidden_' v-if="display">
+      <p v-bind:id="job.ShortDescription">{{ job.ShortDescription }}</p> 
+      <div v-bind:id="index" class="job">
         <p>{{ job.LongDescription }}</p>
-        <p>{{ job.Wages }}</p>
+        <p>Salaire proprosé : {{ job.Wages }}</p>
         <p>{{ job.Place }}</p>
-        <p>{{ job.WorkingTime }}</p>
+        <p>Les horaires de travail sont les suivants : {{ job.Workingtime }}</p>
       </div>
-      <button type="button" @click="displaymore(index)">Learn more</button>
+      <button class="first-button" type="button" v-bind:id="job.Job" @click="displaymore(index, job.Job, job.ShortDescription)">Learn more</button>
+      <button class="second-button" type="button" @click="displayform(index)">Apply this job</button>
     </figure>
   </div>
 </template>
@@ -22,7 +23,7 @@ export default {
   data(){
     return{
       jobs: null,
-      display: false
+      form: false,
     }
   },  
   mounted(){
@@ -34,28 +35,37 @@ export default {
     })    
   },
   methods: {
-    displaymore: function(index) {
-      if (this.display) {
-        this.display = false;
-        const button = document.querySelector('button');
-        button.innerHTML = "Learn more";
-        
-      }else {
-        this.display = true;
-        const button = document.querySelector('button');
-        button.innerHTML = "Show less";
+    displaymore: function(item1, item2, item3) {
+      let element = document.getElementById(item1);
+      let button = document.getElementById(item2);
+      let text = document.getElementById(item3);
+
+      if (element) {
+        if ( element.style.display == "none" || element.style.display == ""){
+          element.style.display = "block";
+          text.style.display = "none"
+          button.innerHTML = "Show less";
+        }else {
+          element.style.display = "none";
+          text.style.display = "block"
+          button.innerHTML = "Learn more";
+        }
       }
-      const display = document.getElementById(`hidden_${{index}}`);
-      console.log(display)
-      console.log(index);
+    },
+    displayform: function(index) {
+      const chosenjob = index;
+      chosenjob;
+      console.log(this.form);
+      this.form=true;
     }
-  }
+  }, 
+  
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.figure {
+#figure {
   display: flex;
   flex-direction: row;
 }
@@ -67,18 +77,20 @@ figure {
   flex-basis: 30%;
   border-radius: 50px 50px 50px 50px;
   border: 1px grey solid;
-  padding:0 3%;
-  position: relative;
+  padding:3% 2%;
+  height: min-content;
+  gap: 15px;
 }
 figure h3 {
   border-bottom: black solid 4px;
   width:150px;
+  margin:0;
 }
 figure p {
   text-align: left;
-  flex-basis: 70%;
+  margin:0;
 }
-figure button {
+figure .first-button {
   background-color: red;
   border-radius: 50px 50px 50px 50px;
   padding: 3% 6%;
@@ -87,7 +99,15 @@ figure button {
 figure button:hover{
   opacity: 0.5;
 }
-figure div {
-  flex-basis: 70%;
+figure div p{
+  margin: 5% 0;
+}
+.job {
+  display: none;
+}
+figure .second-button {
+  background-color: black;
+  color:white;
+  padding:3% 8%;
 }
 </style>

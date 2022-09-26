@@ -18,6 +18,14 @@ app.listen(
     PORT,
     () => console.log(`its alive on http://localhost:${PORT}`)
 );
+app.once('SIGUSR2', function () {
+    process.kill(process.pid, 'SIGUSR2');
+  });
+  
+  app.on('SIGINT', function () {
+    // this is only called on ctrl+c, not restart
+    process.kill(process.pid, 'SIGINT');
+  });
 app.get(
     '/',
     (req,res) => { res.send('Hello World !');
