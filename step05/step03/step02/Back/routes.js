@@ -1,7 +1,89 @@
 import pool from './connection.js';
 import express from 'express';
+import app from './server.js';
 
 const router = express.Router();
+
+/* Route pour le l'inscription */
+
+router.post('/Registration', async function (req,res) {
+    try {
+        console.log(data);
+        const {Firstname, Lastname, Status, Job, Email, Password, Phone, State} = req.body;
+        const sqlQuery = `INSERT INTO Users ( Firstname, Lastname, Status, Job, Email, Password, Phone, State) VALUES (?,?,?,?,?,?,?,?)`; 
+        const rows = await pool.query(sqlQuery, [ Firstname, Lastname, Status, Job, Email, Password, Phone, State] );
+        res.status(200).json(rows);
+        console.log('this registration has created an element in table "Users"');
+        res.send(req.params.name);
+    } catch (e) {
+        res.status(400).send(e.message);
+    }
+    res.status(200)
+});
+
+/* Route pour le formulaire */
+
+router.get('/Form-completion', async function (req,res) {
+    try{
+        const path = require('path');
+        app.use(express.static("views"));
+        app.use(cors());
+        const bodyParser = require("express").json;
+        app.use(bodyParser());
+        const nodemailer = require("nodemailer");
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.AUTH_EMAIL,
+                path: process.env.AUTH_PASS,
+            }
+        })
+        const transporter_pro = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                type: "OAUth2",
+                user: process.env.AUTH_EMAIL,
+                clientId: process.env.AUTH_CLIENT_ID,
+                clientSecret: process.env.AUTH_CLIENT_SECRET,
+                refreshToken: process.env.AUTH_REFRESH_TOKEN
+            }
+        })
+        transporter_pro.verify((error, success) => {
+            if(error){
+                console.log("error");
+            }else {
+                console.log("Ready for messages");
+                console.log("success");
+            }
+        })
+        app.post("/sendemail", (req,res) => {
+            const mailOptions = {
+                from: this.name,
+                to: process.env.AUTH_EMAIL,
+                subject: "Applying for the post of "+this.chosenJob,
+                text: message+" You can call me back, here my phone number : "+this.phone,
+            }
+            transporter_pro
+                .sendMail(mailOptions)
+                .then(() => {
+                    res.sendFile(path.join(__dirname, "../Front/my-project/src/components/Form.vue"));
+                })
+                .catch((error) => {
+                    console.log(error);
+                    res.json({status: "FAILED", message: "An error occured ! "})
+                })
+
+            app.get("/", (req, res) => {
+                res.sendFile(path.join(__dirname, "../Front/my-project/src/components/Form.vue"));
+            })
+            res.sendFile(path.join(__dirname, "/"));
+            res.send("hihi");
+        })
+    }catch (e) {
+        res.status(400).send(e.message);
+    }
+    res.status(200)
+})
 
 /* CRUD request for Advertisements*/
 
@@ -133,15 +215,15 @@ router.delete('/Companies/:id', async function (req,res) {
     }
     res.status(200)
 });
-/* CRUD request for HumanRessources*/
+/* CRUD request for Users*/
 
-/* Getting all the elements from HumanRessources */
-router.get('/HumanRessources', async function (req,res) {
+/* Getting all the elements from Users */
+router.get('/Users', async function (req,res) {
     try {
-        const sqlQuery = 'SELECT * FROM HumanRessources';
+        const sqlQuery = 'SELECT * FROM Users';
         const rows = await pool.query(sqlQuery);
         res.status(200).json(rows);
-        console.log('this should display all elements in table "HumanRessources"');
+        console.log('this should display all elements in table "Users"');
     } catch (e) {
         res.status(400).send(e.message);
     }
@@ -149,50 +231,50 @@ router.get('/HumanRessources', async function (req,res) {
     
 });
 /* Getting a row with the job name */
-router.get('/HumanRessources/:id', async function (req,res) {
+router.get('/Users/:id/:id2', async function (req,res) {
     try {
-        const sqlQuery = `SELECT Firstname, Lastname, Status, Job FROM HumanRessources WHERE Job=?`;
-        const rows = await pool.query(sqlQuery, req.params.id);
+        const sqlQuery = `SELECT * FROM Users WHERE Job=? AND Status=?`;
+        const rows = await pool.query(sqlQuery, [ req.params.id, req.params.id2]);
         res.status(200).json(rows);
-        console.log('this should display the Job = $Job elements in table "HumanRessources"');
+        console.log('this should display the Job = $Job elements in table "Users"');
     } catch (e) {
         res.status(400).send(e.message);
     }
     res.status(200)
 });
 /* creating a new row */
-router.post('/HumanRessources', async function (req,res) {
+router.post('/Users', async function (req,res) {
     try {
-        const {Firstname, Lastname, Status, Job} = req.body;
-        const sqlQuery = `INSERT INTO HumanRessources ( Firstname, Lastname, Status, Job) VALUES (?,?,?,?)`; 
-        const rows = await pool.query(sqlQuery, [ Firstname, Lastname, Status, Job] );
+        const {Firstname, Lastname, Status, Job, Email} = req.body;
+        const sqlQuery = `INSERT INTO Users ( Firstname, Lastname, Status, Job, Email) VALUES (?,?,?,?,?)`; 
+        const rows = await pool.query(sqlQuery, [ Firstname, Lastname, Status, Job, Email] );
         res.status(200).json(rows);
-        console.log('this will create an element in table "HumanRessources"');
+        console.log('this will create an element in table "Users"');
     } catch (e) {
         res.status(400).send(e.message);
     }
     res.status(200)
 });
 /* changing a row with the job name */
-router.put('/HumanRessources/:id', async function (req,res) {
+router.put('/Users/:id', async function (req,res) {
     try {
         const {Firstname, Lastname, Status, Job} = req.body;
-        const sqlQuery = `UPDATE HumanRessources SET Firstname=?, Lastname=?, Status=?, Job=? WHERE Job = ?`; 
+        const sqlQuery = `UPDATE Users SET Firstname=?, Lastname=?, Status=?, Job=? WHERE Job = ?`; 
         const rows = await pool.query(sqlQuery, [ Firstname, Lastname, Status, Job, req.params.id]);
         res.status(200).json(rows);
-        console.log('You have changed an element in table "HumanRessources"');
+        console.log('You have changed an element in table "Users"');
     } catch (e) {
         res.status(400).send(e.message);
     }
     res.status(200)
 });
 /* Deleting a row with the job name */
-router.delete('/HumanRessources/:id', async function (req,res) {
+router.delete('/Users/:id', async function (req,res) {
     try {
-        const sqlQuery = `DELETE FROM HumanRessources WHERE Job = ?`; 
+        const sqlQuery = `DELETE FROM Users WHERE Job = ?`; 
         const rows = await pool.query(sqlQuery, req.params.id);
         res.status(200).json(rows);
-        console.log('the element has been deleted from table "HumanRessources"');
+        console.log('the element has been deleted from table "Users"');
     } catch (e) {
         res.status(400).send(e.message);
     }

@@ -1,6 +1,6 @@
 <template>
   <router-view></router-view>
-    <form action="" method="get" id="form">
+    <form method="get" id="form">
       <h2>Please fill the fields below to apply the job</h2>
       <div>
         <label for="name">Your name : </label>
@@ -14,14 +14,15 @@
         <label for="phone">Your phone number : </label>
         <input type="phone" v-model="phone" name="phone" id="phone" required placeholder="+337 00 00 00 00 or 07 00 00 00 00)">
       </div>
-      <div>
-        <label for="comment">Please leave us a comment below :</label>
-        <textarea v-model="message" name="comment" id="comment" cols="30" rows="10" required placeholder="Hi, my name is Mr Name, I would like to apply this Job as I actually am very qualified for this, I have severals years of experiences ..."></textarea>
+      <div id="message">
+        <label for="message">Please leave us a comment below :</label>
+        <textarea v-model="message" name="message" cols="30" rows="10" required placeholder="Hi, my name is Mr Name, I would like to apply this Job as I actually am very qualified for this, I have severals years of experiences ..."></textarea>
       </div>
       <input id="button" type="submit" value="Send your application">
     </form>
 </template>
 <script>
+import axios from 'axios';
 import emailjs from 'emailjs-com';
 
 export default {
@@ -39,6 +40,12 @@ export default {
     },
     methods: {
       sendEmail() {
+        axios
+        .get('http://localhost:3000/Form-completion')
+        .then((response) => {
+      this.jobs = response.data;
+      console.log(this.jobs)
+        });
         /*
         let data_to_submit = {
           name: this.name,
@@ -100,10 +107,10 @@ export default {
     #form div input {
         width:60%;
     }
-    #form div:nth-child(5) {
+    #form #message {
         flex-direction: column;
     }
-    #form div:nth-child(5) label {
+    #form #message label {
       align-self: baseline;
     }
     #button{

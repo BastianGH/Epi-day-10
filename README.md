@@ -1,4 +1,4 @@
 Je travaille sur le front : </br>
--J'ai importer vue-router dans mon projet, j'ai essayé d'utiliser mailjs pour le formulaire, j'ai mis en place un front répondant plus aux attentes</br>
--Je dois travailler sur l'envoi d'un mail via mon formulaire, ensuite je m'occuperai de la connexion</br>
+-J'ai créer des liens avec des formulaires pour s'inscrire et se connecter</br>
+-Je cherche toujours un moyen de pouvoir consommer une route de mon API avec un formulaire afin de pouvoir faire les opérations clés sur la base de données</br>
 -Les dernières modifications se trouveront toujours dans le dossier "stepXX" le plus avancé.</br>
