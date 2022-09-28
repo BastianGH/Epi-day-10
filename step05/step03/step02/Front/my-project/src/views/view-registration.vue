@@ -72,13 +72,14 @@ export default {
                 }
 
                 /* AXIOS */
-                ( async () => {
-                    const response = await axios.post('http://localhost:3000/Registration');
-                    console.log(response);
-                })
+                axios
+                .post('http://localhost:3000/registration', this.userdata)
+                .then(response => this.userdata = response.data.id);
+                console.log(this.response);
+                /*
                 axios({
-                method: 'post',
-                url: 'http://localhost:3000/Registration',
+                method: 'get',
+                url: 'http://localhost:3000/registration',
                 data: {
                     Firstname: this.firstname,
                     Lastname: this.lastname,
@@ -88,7 +89,7 @@ export default {
                     Phone: this.phone,
                 }
             }).then(response => response.data.id)
-                
+                */
             }else {
                 this.passwordalert = true;
             }

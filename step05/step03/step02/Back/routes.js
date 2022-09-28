@@ -4,11 +4,103 @@ import app from './server.js';
 
 const router = express.Router();
 
-/* Route pour le l'inscription */
+/* Route pour la connection */
 
-router.post('/Registration', async function (req,res) {
+router.get('/Connection', async function (req,res) {
     try {
-        console.log(data);
+        /* Vérifier le contenu */
+
+        console.log(req.body);
+
+        /* Vérifiez que l'utilisateur existe */
+
+        if (req.body.email) {
+            const select = `SELECT * FROM Users WHERE Email=? `;
+            const rows1 = await pool.query(select, req.body.email);
+            console.log("l'utilisateur existe"+rows1);
+            /* S'il existe, vérifier que le mot de passe correspond */
+            if ( req.body.password === rows1.password ){
+                console.log("Bon mot de passe connection autorisé");
+                /* Si c'est le cas on lance le processus : 
+                -changement de "State" de l'User de 0 à 1 pour dire que l'User est à présent connecté;
+                -stockage de cette valeur dans le cookie pour que le navigateur s'en souvienne et laisse cet user connecté. */
+                const update = `UPDATE Users SET State=1 WHERE Email = ?`; 
+                const rows2 = await pool.query(update, req.body.email);
+                console.log(rows2);
+                /* On a changé la valeur dans la base de données pour cet utilisateur */
+                const select = `SELECT * FROM Users WHERE Email=? `;
+                const rows1 = await pool.query(select, req.body.email);
+                /* On recherche à nouveau les valeurs pour pouvoir les utiliser sur tout le site */
+                console.log(rows1);
+                document.cookie = rows1;
+                /* Maintenant pour employer le fait qu'on a notre user connecté, on pourra utiliser document.cookie.State = 1 par exemple pour leur avertir que l'user est connecté */
+                document.location.href="http://localhost:8080";
+                /* On redirige l'utilisateur sur la page d'acceuil */
+
+            }else 
+            /* Si le mot de passe ne correspont pas */
+            console.log ("Le mot de passe est erroné");
+        }else {
+            /* S'il n'exsite pas */
+            console.log("Le compte cherché n'existe pas");
+        }       
+    } catch (e) {
+        res.status(400).send(e.message);
+    }
+    res.status(200)
+});
+
+/* Route pour la déconnection */
+
+router.get('/Disonnection', async function (req,res) {
+    try {
+        /* On change le status de l'utilisateur */
+        const update = `UPDATE Users SET State=0 WHERE Email = ?`; 
+        const rows1 = await pool.query(update, req.body.email);
+        console.log(rows1);
+        /* On a changé la valeur dans la base de données pour cet utilisateur */
+        const select = `SELECT * FROM Users WHERE Email=? `;
+        const rows2 = await pool.query(select, req.body.email);
+        /* On supprime le cookie pour cet utilisateur */
+        document.cookie = "";
+        /* Maintenant pour employer le fait qu'on a notre user connecté, on pourra utiliser document.cookie.State = 1 par exemple pour leur avertir que l'user est connecté */
+        document.location.href="http://localhost:8080";
+        /* On redirige l'utilisateur sur la page d'acceuil */   
+    } catch (e) {
+        res.status(400).send(e.message);
+    }
+    res.status(200)
+});
+
+/* Route pour changer les paramètres */
+
+router.get('/Update', async function (req,res) {
+    try {
+        /* On récupère les valeur entrées */
+        console.log(req.body);
+        /* pour chaque valeur récupérer on modifie la row de l'User */
+        /* On change le status de l'utilisateur */
+        const update = `UPDATE Users SET Firstname=?, Lastname=?, Status=?, Phone=?, Email=?, Password=?, Email=?, WHERE Email = ?`; 
+        const rows2 = await pool.query(update, req.body);
+        console.log(rows2);
+        /* On le cookie pour cet utilisateur */
+        document.cookie = rows2;
+        /* Maintenant pour employer le fait qu'on a notre user connecté, on pourra utiliser document.cookie.State = 1 par exemple pour leur avertir que l'user est connecté */
+        document.location.href="http://localhost:8080";
+        /* On redirige l'utilisateur sur la page d'acceuil */   
+    } catch (e) {
+        res.status(400).send(e.message);
+    }
+    res.status(200)
+});
+/* Route pour le formulaire */
+
+/* Route pour l'inscription */
+
+router.post('/registration', async function (req,res) {
+    try {
+        /* On affiche les données récupérés */
+        console.log(req.body);
         const {Firstname, Lastname, Status, Job, Email, Password, Phone, State} = req.body;
         const sqlQuery = `INSERT INTO Users ( Firstname, Lastname, Status, Job, Email, Password, Phone, State) VALUES (?,?,?,?,?,?,?,?)`; 
         const rows = await pool.query(sqlQuery, [ Firstname, Lastname, Status, Job, Email, Password, Phone, State] );
@@ -23,7 +115,7 @@ router.post('/Registration', async function (req,res) {
 
 /* Route pour le formulaire */
 
-router.get('/Form-completion', async function (req,res) {
+router.get('/Sendemail', async function (req,res) {
     try{
         const path = require('path');
         app.use(express.static("views"));

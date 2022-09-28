@@ -3,34 +3,39 @@ import express from 'express';
 import bodyparser from 'body-parser';
 import cors from 'cors';
             
-
+/*
+ 
+*/
 const app = express();
 const PORT = 3000;
-const corsOptions = {
+/* const corsOptions = {
+    credentials: true,
     origin: "http://localhost:8080",
+    $exposedHeaders: ["X-Filename"]
 };
+*/
+app.use(cors( { origin: "http://localhost:8080"}));
 
-app.use(cors(corsOptions));
 
 app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({extended: false}));
 
-app.listen(
-    PORT,
-    () => console.log(`its alive on http://localhost:${PORT}`)
-);
+
+/*
 app.once('SIGUSR2', function () {
     process.kill(process.pid, 'SIGUSR2');
   });
   
-  app.on('SIGINT', function () {
-    // this is only called on ctrl+c, not restart
-    process.kill(process.pid, 'SIGINT');
-  });
-app.get(
-    '/',
-    (req,res) => { res.send('Hello World !');
-    res.header("Access-Control-Allow-Origin", "true");
-})
-app.use('/', dbroutes);
+app.on('SIGINT', function () {
+  // this is only called on ctrl+c, not restart
+  process.kill(process.pid, 'SIGINT');
+});
+*/
+app.use('', dbroutes);
+
+app.listen(
+  PORT,
+  () => console.log(`its alive on http://localhost:${PORT}`)
+);
 
 export default app;
